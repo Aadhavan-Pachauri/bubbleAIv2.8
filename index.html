@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M10 30 L50 10 L90 30 L50 50 Z' fill='%233b82f6'/%3E%3Cpath d='M10 30 L10 70 L50 90 L50 50 Z' fill='%233b82f6' fill-opacity='0.7'/%3E%3Cpath d='M50 50 L50 90 L90 70 L90 30 Z' fill='%233b82f6' fill-opacity='0.5'/%3E%3C/svg%3E" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bubble AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            borderRadius: {
+              '5xl': '2.5rem',
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              'bg-primary': 'var(--bg-primary)',
+              'bg-secondary': 'var(--bg-secondary)',
+              'bg-tertiary': 'var(--bg-tertiary)',
+              'border-color': 'var(--border-color)',
+              'text-primary': 'var(--text-primary)',
+              'text-secondary': 'var(--text-secondary)',
+              'interactive-hover': 'var(--bg-interactive-hover)',
+              'primary-start': '#6366f1', /* indigo-500 */
+              'primary-end': '#8b5cf6',   /* violet-500 */
+              'success': '#10b981',       /* emerald-500 */
+              'warning': '#f59e0b',       /* amber-500 */
+              'error': '#ef4444',         /* red-500 */
+              'roblox-green': '#00a2ff',
+            },
+            animation: {
+              'shine': 'shine 2s linear infinite',
+              'marquee': 'marquee 40s linear infinite',
+              'blink': 'blink 1s step-end infinite',
+              'aurora': 'aurora 30s linear infinite',
+            },
+            keyframes: {
+              shine: {
+                '0%': { backgroundPosition: '200% 0' },
+                '100%': { backgroundPosition: '-200% 0' },
+              },
+              marquee: {
+                '0%': { transform: 'translateX(0%)' },
+                '100%': { transform: 'translateX(-100%)' },
+              },
+              'blink': {
+                'from, to': { opacity: '1' },
+                '50%': { opacity: '0' },
+              },
+               aurora: {
+                from: {
+                    transform: 'rotate(0deg)',
+                },
+                to: {
+                    transform: 'rotate(360deg)',
+                },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f9fafb; /* gray-50 */
+        --bg-tertiary: #f3f4f6; /* gray-100 */
+        --bg-interactive-hover: rgba(0, 0, 0, 0.05);
+        --border-color: #e5e7eb; /* gray-200 */
+        --text-primary: #1f2937; /* gray-800 */
+        --text-secondary: #6b7280; /* gray-500 */
+        --prose-text: #374151; /* gray-700 */
+        --prose-code-bg: rgba(0, 0, 0, 0.05);
+        --mermaid-bg: #f9fafb;
+        --mermaid-primary: #f3f4f6;
+        --mermaid-text-primary: #1f2937;
+        --mermaid-text-secondary: #6b7280;
+      }
+      .dark {
+          --bg-primary: #0d0d0d;
+          --bg-secondary: #1a1a1a;
+          --bg-tertiary: #2a2a2a;
+          --bg-interactive-hover: rgba(255, 255, 255, 0.05);
+          --border-color: rgba(255, 255, 255, 0.1);
+          --text-primary: #f3f4f6; /* gray-100 */
+          --text-secondary: #9ca3af; /* gray-400 */
+          --prose-text: #e5e7eb;
+          --prose-code-bg: rgba(255, 255, 255, 0.05);
+          --mermaid-bg: #1a1a1a;
+          --mermaid-primary: #2a2a2a;
+          --mermaid-text-primary: #ffffff;
+          --mermaid-text-secondary: #d1d5db;
+      }
+      /* For react-syntax-highlighter */
+      pre {
+        margin: 0;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      code {
+        font-family: 'JetBrains Mono', monospace;
+      }
+      body {
+        color: var(--text-primary);
+        font-family: 'Inter', sans-serif;
+      }
+      /* Hide the default Mermaid.js error display */
+      .mermaid-main-error {
+        display: none !important;
+      }
+      /* Basic styles for AI message content */
+      .prose {
+        color: var(--prose-text);
+        font-size: 0.95rem;
+        line-height: 1.7;
+      }
+      .prose p {
+        margin-bottom: 0.75rem;
+      }
+      .prose code {
+        background: var(--prose-code-bg);
+        padding: 0.2em 0.4em;
+        border-radius: 0.25rem;
+        font-size: 0.9em;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.1.1/",
+    "react": "https://esm.sh/react@^19.1.1",
+    "@google/genai": "https://esm.sh/@google/genai@^1.19.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.1/",
+    "framer-motion": "https://esm.sh/framer-motion@^12.23.12",
+    "prism-react-renderer/": "https://esm.sh/prism-react-renderer@^2.3.1/",
+    "prism-react-renderer": "https://esm.sh/prism-react-renderer@^2.3.1",
+    "@heroicons/react/": "https://esm.sh/@heroicons/react@^2.2.0/",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.45.0",
+    "@monaco-editor/react": "https://esm.sh/@monaco-editor/react@^4.6.2",
+    "react-split-grid": "https://esm.sh/react-split-grid@^1.0.4",
+    "react-chartjs-2": "https://esm.sh/react-chartjs-2@^5.3.0",
+    "chart.js": "https://esm.sh/chart.js@^4.5.1",
+    "sonner": "https://esm.sh/sonner@^2.0.7",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.6"
+  }
+}
+</script>
+<!-- Add Mermaid.js for rendering diagrams -->
+<script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    window.mermaid = mermaid;
+
+    // This function will be called on initial load and whenever the theme changes.
+    window.initializeMermaidTheme = () => {
+        if (!window.mermaid) return;
+
+        // Get computed styles from the root element
+        const styles = getComputedStyle(document.documentElement);
+
+        // Call initialize with the resolved color values. This resets the config.
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'dark', // Use 'dark' as a base, variables will override.
+            securityLevel: 'loose',
+            fontFamily: 'Inter, sans-serif',
+            themeVariables: {
+                background: styles.getPropertyValue('--mermaid-bg').trim(),
+                primaryColor: styles.getPropertyValue('--mermaid-primary').trim(),
+                primaryTextColor: styles.getPropertyValue('--mermaid-text-primary').trim(),
+                lineColor: '#6366f1', // This is a hardcoded value
+                textColor: styles.getPropertyValue('--mermaid-text-secondary').trim(),
+                nodeBorder: '#8b5cf6', // This is a hardcoded value
+            }
+        });
+    };
+
+    // Initial setup. A small delay ensures styles are loaded and computed.
+    setTimeout(() => {
+        if(window.initializeMermaidTheme) window.initializeMermaidTheme();
+    }, 10);
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

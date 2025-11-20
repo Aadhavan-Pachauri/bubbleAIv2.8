@@ -1,0 +1,7 @@
+{
+  "name": "AI Chat V2.5",
+  "description": "An AI-powered chat application for Roblox developers, featuring a premium glassmorphism UI, code generation, and Bloxlink authentication.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

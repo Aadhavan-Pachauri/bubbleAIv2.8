@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # 1. 1MCP - Fast & Simple
+  gateway-1mcp:
+    image: ghcr.io/1mcp-app/agent:latest
+    ports:
+      - "3050:3050"
+    environment:
+      - ONE_MCP_PORT=3050
+      - ONE_MCP_ENABLE_ASYNC_LOADING=true
+    volumes:
+      - ./config/1mcp:/root/.config/1mcp
+    restart: unless-stopped
+
+  # 2. MetaMCP - Docker Native
+  gateway-metamcp:
+    image: metatool/metamcp:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+    volumes:
+      - ./config/metamcp:/config
+    restart: unless-stopped
+
+  # 3. MCP Hub - Workspace Manager
+  gateway-mcp-hub:
+    image: ravitemer/mcp-hub:latest
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - NODE_ENV=production
+    restart: unless-stopped
+
+  # 4. Envoy AI - Enterprise Scale
+  gateway-envoy:
+    image: envoyproxy/envoy-ai-gateway:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config/envoy.yaml:/etc/envoy/envoy.yaml
+    restart: unless-stopped
+
+  # 5. Docker Gateway - Security
+  gateway-docker:
+    image: docker/mcp-gateway:latest
+    ports:
+      - "8081:8081"
+    environment:
+      - ENABLE_SECURITY=true
+    restart: unless-stopped
+
+  # 6. TrueFoundry - Enterprise Features
+  gateway-truefoundry:
+    image: truefoundry/mcp-gateway:latest
+    ports:
+      - "9000:9000"
+    environment:
+      - TF_API_KEY=${TRUEFOUNDRY_API_KEY}
+    restart: unless-stopped
